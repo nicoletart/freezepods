@@ -3,7 +3,6 @@ const ModeTheme = {
     getTheme: (gameId, modeId) => {
       switch (gameId) {
         case '1':
-          // Theme logic for Game 1
           switch (modeId) {
             case 'light':
               return { backgroundColor: '#ffa', textColor: '#000' };

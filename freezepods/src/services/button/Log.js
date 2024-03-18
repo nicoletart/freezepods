@@ -1,6 +1,5 @@
 import { microbitUuid } from "../../utils/Constant";
 
-// LoggerComponent.js
 export function addLog(string, newLine) {
     const logElement = document.getElementById("log");
     if (logElement) {

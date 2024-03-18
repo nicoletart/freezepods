@@ -1,9 +1,9 @@
 // import { microbitUuid } from "../../../old/button"; 
-import { microbitUuid } from "../../utils/Constant";
+import { microbitUuid } from "../src/utils/Constant";
 import { Context, createContext, useState } from "react";
 import React from "react";
-import { addLog, addLogError, clearLog } from "../button/Log";
-import { bluetoothDevice, patterns } from "../../utils/Constant";
+import { addLog, addLogError, clearLog } from "../src/services/button/Log";
+import { bluetoothDevice, patterns } from "../src/utils/Constant";
 // import Microbit from "./microbit";
 
 
@@ -41,7 +41,6 @@ export function pinTouchEvent(deviceName, state) {
   return { state: state, deviceName: deviceName };
 }
 /*
-// Nicole
 function onTXLightEvent(deviceName, lightLevel){
   if (lightLevel > 240){
     console.log("WORKED")
@@ -87,7 +86,6 @@ export class Microbit {
     this.buttonBChar = null;
     this.deviceName = null;
 
-    // NICOLE
     this.buttonUARTService = null;
     this.txCharacteristic = null;
     this.rxCharacteristic = null;
@@ -151,7 +149,6 @@ export class Microbit {
     // }
   }
 
-  //Nicole
   onTxCharacteristicValueChanged(event) {
     let devName = getName(event.currentTarget.service.device.name);
     let state = event.target.value.getUint8(0);
@@ -279,7 +276,6 @@ export class Microbit {
         console.error(error);
       });
 
-    // NICOLE
 
     this.buttonUARTService = await server.getPrimaryService(
       microbitUuid.uartService[0]

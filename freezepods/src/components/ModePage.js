@@ -76,7 +76,7 @@ const ModePage = () => {
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
           </div>
           <div class="toast-body" id="toastBody">
-            Hello, world! This is a toast message.
+            Hello, world! This is a toast message!
           </div>
         </div>
       </div>

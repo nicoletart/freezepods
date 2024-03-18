@@ -13,7 +13,7 @@ const Alert = ({ text }) => {
   }, [text]);
 
   return (
-    <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true" ref={toastRef}>
+    <div id="liveToast" className="toast" role="alert" aria-live="assertive" >
       <div id="toastBody" className="toast-body" ref={bodyRef}></div>
     </div>
   );

@@ -24,7 +24,7 @@ const GameBlock = ({ gameState }) => {
   };
 
   return (
-    <div className={`card ${classUpdates.gameBlock[gameState]}`}>
+    <div className={`${classUpdates.gameBlock[gameState]}`}>
       <div id="gameBlockHeader">{textUpdates.gameBlockHeader[gameState]}</div>
       <div id="gameCountdown">{textUpdates.gameCountdown[gameState]}</div>
       <div id="scoreText">{textUpdates.scoreText[gameState]}</div>

@@ -14,9 +14,8 @@ const GameLogic = ({ MBList, patterns, showAlert }) => {
     if (!gameRunning && MBList.numberOfMicrobits > 0) {
       setGameRunning(true);
 
-      // Your game logic here...
 
-      setGameRunning(false);
+    //   setGameRunning(false);
     } else if (MBList.numberOfMicrobits === 0) {
       showAlert("No microbits connected!");
     }
@@ -26,15 +25,14 @@ const GameLogic = ({ MBList, patterns, showAlert }) => {
   const endGame = () => {
     setEndGameBoolean(true);
     console.log("Game ended");
-    // Perform any cleanup or additional actions when the game ends
   };
 
   return (
     <div>
-        <button></button>
-        <button></button>
+        <button aria-label="Start Game" onClick={startGame}>start game</button>
+        <button aria-label="End Game" onClick={startGame}>end game</button>
     </div>
-  ); // Replace with actual JSX elements and logic
+  );
 };
 
 export default GameLogic;

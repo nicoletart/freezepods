@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import styles from '../../shared/modetheme.module.css';
-import { microbitUuid } from "../../utils/Constant";
-import Alert from "./Alert";
+import { microbitUuid } from "../src/utils/Constant";
+import Alert from "../src/services/microbit/Alert";
 
 
 
@@ -42,7 +42,6 @@ const MicrobitComponent = ({device, showAlert}) => {
             this.buttonBChar = null;
             this.deviceName = null;
         
-            // NICOLE
             this.buttonUARTService = null;
             this.txCharacteristic = null;
             this.rxCharacteristic = null;
@@ -235,7 +234,6 @@ const MicrobitComponent = ({device, showAlert}) => {
                 console.error(error);
               });
         
-            // NICOLE
         
             this.buttonUARTService = await server.getPrimaryService(
               microbitUuid.uartService[0]

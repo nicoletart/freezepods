@@ -1,15 +1,13 @@
-// App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import GamePage from './components/GamePage';
 import ModePage from './components/ModePage';
-import MyMicrobit from './services/microbit/oldmicrobit';
-//import { MyProvider } from './components/microbit';
+import MicrobitList from './services/microbit/MicrobitList';
 
 const App = () => {
   return (
-    <MyMicrobit>
+    <MicrobitList>
 
       <Router>
         <Routes>
@@ -26,7 +24,7 @@ const App = () => {
 
         </Routes>
       </Router>
-      </MyMicrobit>
+      </MicrobitList>
   );
 };
 

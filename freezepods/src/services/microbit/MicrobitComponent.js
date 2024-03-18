@@ -24,7 +24,6 @@ class MicrobitComponent extends Component {
     }
 
     buttonPressEvent(button, deviceName, state) {
-        // console.log(button + " " + deviceName);
         if (state === 1) {
             this.dispatchEvent(
                 new CustomEvent("microbitButtonPress", {
@@ -48,7 +47,6 @@ class MicrobitComponent extends Component {
         this.buttonBChar = null;
         this.deviceName = null;
     
-        // NICOLE
         this.buttonUARTService = null;
         this.txCharacteristic = null;
         this.rxCharacteristic = null;

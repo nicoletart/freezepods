@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { patterns } from '../../utils/Constant';
 import MicrobitComponent from './MicrobitComponent';
 import { microbitUuid } from '../../utils/Constant';
 
@@ -20,23 +19,19 @@ const MicrobitList = () => {
     } else {
        console.error("Invalid component type: expected MicrobitComponent");
     }
-    // Your other logic for adding a micro:bit...
   };
 
   const removeMicrobit = (microbitName) => {
     setMicrobitNames(prevNames => prevNames.filter(name => name !== microbitName));
-    // Your other logic for removing a micro:bit...
   };
 
   useEffect(() => {
-    // Your useEffect logic here...
     updateUIMicrobitList();
   }, [microbitNames]);
 
   const connectToDevice = async () => {
     try {
       const device = await navigator.bluetooth.requestDevice({
-        // To accept all devices, use acceptAllDevices: true and remove filters.
         filters: [{ namePrefix: "BBC micro:bit" }],
         optionalServices: [
           microbitUuid.genericAccess[0],
@@ -57,11 +52,6 @@ const MicrobitList = () => {
     } catch (error) {
       console.error('Error connecting to device:', error);
     }
-  };
-
-  const updateUIMicrobitList = () => {
-    // No need to manipulate the DOM directly
-    // Render the micro:bit names using JSX
   };
 
   const createButton = (name) => {

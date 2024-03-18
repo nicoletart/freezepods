@@ -1,4 +1,3 @@
-// ModePage.js
 import React, { useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ModeTheme from '../shared/ModeTheme';
@@ -76,7 +75,7 @@ const ModePage = () => {
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
           </div>
           <div class="toast-body" id="toastBody">
-            Hello, world! This is a toast message.
+            Hello, world! This is a toast message!
           </div>
         </div>
       </div>

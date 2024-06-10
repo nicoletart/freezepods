@@ -1,12 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ModeTheme from '../shared/ModeTheme';
-import { Link } from 'react-router-dom';
-import styles from '../shared/modetheme.module.css';
-
-import MicrobitComponent from '../services/microbit/MicrobitComponent';
-import MicrobitList from '../services/microbit/MicrobitList';
-import Alert from '../services/microbit/Alert';
+import MicrobitList from '../services/microbit/MicrobitList'; // Import MicrobitList
+import GameLogic from '../services/microbit/GameLogic';
+// import BlocklyComponent from 'blockly-react-component'
+// import ReactBlockly from "react-blockly";
+// import Blockly from "blockly";
 
 const ModePage = () => {
   const { gameId, modeId } = useParams();
@@ -19,66 +18,94 @@ const ModePage = () => {
     setShowAlert(true);
   };
 
+  const [microbitDevices, setMicrobitDevices] = useState([]);
+
+  const initialXml =
+    '<xml xmlns="http://www.w3.org/1999/xhtml"><block type="text" x="70" y="30"><field name="TEXT"></field></block></xml>';
+  const toolboxCategories = [
+    {
+      name: "Custom",
+      colour: "#5CA699",
+      blocks: [
+        {
+          type: "stringOf",
+        },
+        {
+          type: "responceontext",
+        },
+        {
+          type: "simplebot",
+        },
+        {
+          type: "text",
+        },
+        {
+          type: "regexInput",
+        },
+      ],
+    },
+    {
+      name: "Logic",
+      colour: "#5C81A6",
+      blocks: [
+        {
+          type: "controls_if",
+        },
+        {
+          type: "logic_compare",
+        },
+      ],
+    },
+    {
+      name: "Math",
+      colour: "#5CA65C",
+      blocks: [
+        {
+          type: "math_round",
+        },
+        {
+          type: "math_number",
+        },
+      ],
+    },
+  ];
+  function workspaceDidChange(workspace) {
+    const newXml = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
+    document.getElementById("generated-xml").innerText = newXml;
+
+    const code = Blockly.JavaScript.workspaceToCode(workspace);
+    document.getElementById("code").value = code;
+  }
+  function runCode() {
+    // Generate JavaScript code and run it.
+    console.log('AXAXAXAX');
+    const code = document.getElementById("code").value
+    window.LoopTrap = 1000;
+    Blockly.JavaScript.INFINITE_LOOP_TRAP =
+        'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
+    Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+    try {
+      eval(code);
+    } catch (e) {
+      alert(e);
+    }
+  }
+
+
+
+
+
   return (
     <div>
       <h2>{`Game ${gameId} - ${modeId}`}</h2>
       <div style={{ background: modeTheme.backgroundColor, color: modeTheme.textColor }}>
         <p>This is the content for Game {gameId}, {modeId}.</p>
       </div>
+      
       <div>
-        <p>
-          Load this MakeCode micro:bit project on to your micro:bits
-          {/* <Link href="https://makecode.microbit.org/_37FHVCLC2CAL" />
-          <Link href="https://makecode.microbit.org/_e78LcgTioFhe"  /> */}
-        </p>
-          <MicrobitList />
-        <p>
-          <div class="btn-group" id="microbitList" role="group" aria-label="Basic outlined example">
-            Connected Microbits:
-          </div>
-        </p>
+        <MicrobitList microbitDevices={microbitDevices} setMicrobitDevices={setMicrobitDevices} />
       </div>
-      <div class="container px-4 py-3" id="hanging-icons">
-        <h3 class="pb-2 border-bottom">New Game</h3>
-        <br />
-         {/*
-        <button className="btn btn-primary" onClick={startGame}>Start Game</button>
-        <button class="btn remix btn--remix" onClick={endGame}>End Game</button> {/* Call endGame when clicked */}
-      </div>
-      {/* Rest of your JSX */}
-      <div class="container px-4 py-3">
-        <div id="gameBlock" class="card text-bg-secondary mb-3">
-          <div class="card-header" id="gameBlockHeader">Press Start Game to Start!</div>
-          <div class="card-body">
-            <h5 class="card-title" id="gameCountdown">Score Here</h5>
-            <p class="card-text" id="scoreText">Updates Here</p>
-          </div>
-        </div>
-      </div>
-      <div class="table container">
-        <table class="table" id="scoreTable">
-          <thead class="thead-dark">
-            <tr>
-              <th scope="col">Round</th>
-              <th scope="col">Score</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            {/* Rows for score table */}
-          </tbody>
-        </table>
-      </div>
-      <div class="toast-container position-fixed bottom-0 end-0 p-1">
-        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="toast-header">
-            <strong class="me-auto">Alert</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-          </div>
-          <div class="toast-body" id="toastBody">
-            Hello, world! This is a toast message!
-          </div>
-        </div>
-      </div>
+      
     </div>
   );
 };

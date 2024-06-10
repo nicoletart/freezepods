@@ -376,7 +376,7 @@ export class MicrobitList {
   }
 
   clearDisplays() {
-    this.displayAllMicrobits(patterns["clear"]);
+    displayAllMicrobits(patterns["clear"]);
   }
 
   get nameList() {

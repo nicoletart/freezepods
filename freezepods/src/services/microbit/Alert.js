@@ -1,22 +1,24 @@
-import React, { useRef, useEffect } from 'react';
+// import React, { useRef, useEffect } from 'react';
+// import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-const Alert = ({ text }) => {
-  const toastRef = useRef(null);
-  const bodyRef = useRef(null);
 
-  useEffect(() => {
-    const toastInstance = window.bootstrap.Toast.getOrCreateInstance(toastRef.current, {
-      delay: 1500,
-    });
-    toastInstance.show();
-    bodyRef.current.textContent = text;
-  }, [text]);
+// const Alert = ({ text }) => {
+//   const toastRef = useRef(null);
+//   const bodyRef = useRef(null);
 
-  return (
-    <div id="liveToast" className="toast" role="alert" aria-live="assertive" >
-      <div id="toastBody" className="toast-body" ref={bodyRef}></div>
-    </div>
-  );
-};
+//   useEffect(() => {
+//     const toastInstance = window.bootstrap.Toast.getOrCreateInstance(toastRef.current, {
+//       delay: 1500,
+//     });
+//     toastInstance.show();
+//     bodyRef.current.textContent = text;
+//   }, [text]);
 
-export default Alert;
+//   return (
+//     <div id="liveToast" className="toast" role="alert" aria-live="assertive" >
+//       <div id="toastBody" className="toast-body" ref={bodyRef}></div>
+//     </div>
+//   );
+// };
+
+// export default Alert;

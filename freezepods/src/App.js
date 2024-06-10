@@ -4,10 +4,11 @@ import HomePage from './components/HomePage';
 import GamePage from './components/GamePage';
 import ModePage from './components/ModePage';
 import MicrobitList from './services/microbit/MicrobitList';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 
 const App = () => {
   return (
-    <MicrobitList>
 
       <Router>
         <Routes>
@@ -24,7 +25,6 @@ const App = () => {
 
         </Routes>
       </Router>
-      </MicrobitList>
   );
 };
 

@@ -3,9 +3,8 @@ import { useParams } from 'react-router-dom';
 import ModeTheme from '../shared/ModeTheme';
 import MicrobitList from '../services/microbit/MicrobitList'; // Import MicrobitList
 import GameLogic from '../services/microbit/GameLogic';
-// import BlocklyComponent from 'blockly-react-component'
-// import ReactBlockly from "react-blockly";
-// import Blockly from "blockly";
+import ReactBlockly from "react-blockly";
+import Blockly from "blockly";
 
 const ModePage = () => {
   const { gameId, modeId } = useParams();

@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #282c34;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #282c34;
+    --foreground: #000000;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  padding-top: 5rem;
+  color: white;
+}
+
+h1{
+  font-size: 30px;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.game-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.navigation {
+  background-color: #4c5463;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 20px;
+
+  padding: 10px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.navigation a:hover {
+  text-decoration: underline;
+}
+
+.page-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.game-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
+  justify-items: center;
+  align-items: center;
+}
+
+.welcome-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 5rem);
+  text-align: center;
+}
+
+.animated-button {
+  padding: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: rgb(100, 108, 109);
+  border-radius: 10px;
+  border: 2px solid white;
+}
+
+.animated-button:hover {
+  background-color: rgb(63, 65, 71);
+}
+
+.animated-button.blockly-button {
+  background-color: rgb(77, 105, 187);
+}
+
+li {
+  border: 2px solid white;
+  margin: 10px;
+}
+
+.game-link-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip {
+  position: absolute;
+  background-color: white;
+  color: black;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid black;
+  font-size: 10px;
+  white-space: nowrap;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  word-wrap: break-word;
+}
+
+.game-link-container:hover .tooltip {
+  display: block;
+}
+
+.game-link.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.animated-button.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 5px 10px;
+  background-color: rgb(77, 105, 187);
+}
+
+/* Screen Changes */
+
+@media (max-width: 925px) {
+  .tooltip {
+    white-space: pre-wrap;
+  }
+}
+
+@media (max-width: 650px) {
+  /* For smaller screens, force a single column */
+  .game-buttons {
+    grid-template-columns: 1fr;
+  }
+}

@@ -3,16 +3,23 @@
 import { use, useEffect, useState, useRef } from "react";
 import { useDevices } from "../context/ConnectedDevicesContext";
 import { MicrobitUuid } from "../components/MicrobitUuid";
-import ReconnectButton from "../components/ReconnectButton";
 import AnimatedButton from "../components/AnimatedButton";
 import ConnectedDevicesList from "../components/ConnectedDevicesList";
 import { lightUpDevice, turnOffDevice } from "../components/LightDevice";
-import { useRounds } from "../context/BlocklyContext";
+import { useBlocklyContext } from "../context/BlocklyContext";
 
 export default function GamePage({ gameType }) {
-  const { devices, reconnectDevices, ready } = useDevices();
-  let { rounds, timerLength } = useRounds();
-
+  const { devices } = useDevices();
+  let { rounds, timerLength, button } = useBlocklyContext();
+  console.log(
+    "Rounds:",
+    rounds,
+    "Timer Length:",
+    timerLength,
+    "Button:",
+    button
+  );
+  const [buttonState, setButtonState] = useState(MicrobitUuid.buttonAState[0]);
   const [gameState, setGameState] = useState({
     score: 0,
     timer: 5,
@@ -24,10 +31,11 @@ export default function GamePage({ gameType }) {
     services: null,
   });
 
-  const [previousDevice, setPreviousDevice] = useState(null);
   const prevCharacteristicRef = useRef(null);
+  const previousDeviceRef = useRef(null);
+  const localRound = useRef(gameState.round);
 
-  let index = 0;
+  let deviceIndex = useRef(0);
 
   const {
     score,
@@ -41,35 +49,57 @@ export default function GamePage({ gameType }) {
   } = gameState;
 
   const getRandomDevice = (devices) => {
-    if (index === 0) {
-      index = 1;
-      return devices[1];
-    } else {
-      index = 0;
-      return devices[0];
-    }
+    if (devices.length === 0) return null;
+
+    deviceIndex.current = (deviceIndex.current + 1) % devices.length;
+    return devices[deviceIndex.current];
   };
 
   useEffect(() => {
     console.log("Previous Characteristic:", prevCharacteristicRef.current);
   }, [prevCharacteristicRef.current]);
 
+  useEffect(() => {
+    setButtonState(
+      button === "A"
+        ? MicrobitUuid.buttonAState[0]
+        : button === "B"
+        ? MicrobitUuid.buttonBState[0]
+        : MicrobitUuid.buttonAState[0]
+    );
+  }, [button]);
+
+  useEffect(() => {
+    localRound.current = gameState.round;
+  }, [gameState.round]);
+
   const stopNotifications = async () => {
     if (prevCharacteristicRef.current) {
       console.log(
-        "Stopping notifications for characteristic:",
+        "Stopping notifications for:",
         prevCharacteristicRef.current.uuid
       );
-      await prevCharacteristicRef.current.stopNotifications();
-      prevCharacteristicRef.current.removeEventListener(
-        "characteristicvaluechanged",
-        handleButtonStateChanged
-      );
+      try {
+        await prevCharacteristicRef.current.stopNotifications();
+        if (prevCharacteristicRef.current) {
+          prevCharacteristicRef.current.removeEventListener(
+            "characteristicvaluechanged",
+            handleButtonStateChanged
+          );
+          console.log("Notifications stopped and listener removed.");
+        }
+      } catch (error) {
+        console.error("Error stopping notifications:", error);
+      }
+      prevCharacteristicRef.current = null;
     }
   };
 
   const enableNotifications = async (characteristic, handler) => {
-    console.log("Enabling notifications", characteristic);
+    console.log(
+      "Enabling notifications for characteristic:",
+      characteristic.uuid
+    );
     try {
       if (!characteristic.properties.notify) {
         console.error(
@@ -79,7 +109,6 @@ export default function GamePage({ gameType }) {
       }
       await characteristic.startNotifications();
       characteristic.addEventListener("characteristicvaluechanged", handler);
-      console.log("Notifications enabled for:", characteristic.uuid);
     } catch (error) {
       console.error("Failed to enable notifications:", error);
     }
@@ -91,7 +120,7 @@ export default function GamePage({ gameType }) {
         MicrobitUuid.buttonService[0]
       );
       const buttonCharacteristic = await buttonService.getCharacteristic(
-        MicrobitUuid.buttonAState[0]
+        buttonState
       );
 
       await stopNotifications();
@@ -154,6 +183,12 @@ export default function GamePage({ gameType }) {
   };
 
   const startGame = async () => {
+    for (const device of devices) {
+      if (device.device.ledOn) {
+        console.log("Turning off device:", device.device);
+        await turnOffDevice(device.device);
+      }
+    }
     const newRandomDevice = getRandomDevice(devices);
     if (!newRandomDevice) {
       console.error("No devices connected. Please connect a device");
@@ -183,11 +218,33 @@ export default function GamePage({ gameType }) {
     }
   };
 
+  const endGame = async () => {
+    setGameState((prev) => ({
+      ...prev,
+      timer: 5,
+      round: 1,
+      gameStarted: false,
+      gameOver: true,
+      randomDevice: null,
+      server: null,
+      services: null,
+    }));
+    if (previousDeviceRef.current) {
+      console.log(
+        "Turning off previous device:",
+        previousDeviceRef.current.device
+      );
+      await turnOffDevice(previousDeviceRef.current.device);
+    }
+    previousDeviceRef.current = null;
+    await stopNotifications();
+  };
+
   const nextRound = async () => {
     console.log("Next Round", gameState.round, round);
     if (gameState.round > rounds) {
       console.log("Game Over!");
-      setGameState((prev) => ({ ...prev, gameOver: true }));
+      endGame();
       return;
     }
 
@@ -226,13 +283,14 @@ export default function GamePage({ gameType }) {
 
   const handleButtonStateChanged = (event) => {
     const value = event.target.value.getUint8(0);
-    if (value === 1) {
+    if (value === 1 && localRound.current === gameState.round) {
       gameState.round = gameState.round + 1;
       setGameState((prev) => ({
         ...prev,
         score: prev.score + 1,
         round: gameState.round,
       }));
+      console.log("Button pressed. About to call next round");
       nextRound();
     }
   };
@@ -263,14 +321,9 @@ export default function GamePage({ gameType }) {
           score: prev.score - 2,
           round: gameState.round,
         }));
+        console.log("Timer ran out. About to call next round");
         nextRound();
       }
-
-      if (gameOver) {
-        clearInterval(countdown);
-        setGameState((prev) => ({ ...prev, timer: 0 }));
-      }
-
       return () => {
         if (countdown) clearInterval(countdown);
       };
@@ -281,34 +334,37 @@ export default function GamePage({ gameType }) {
     if (!randomDevice) return;
 
     console.log("Handling device:", randomDevice.device);
-
-    if (previousDevice) {
-      console.log("Turning off previous device:", previousDevice.device);
-      await turnOffDevice(previousDevice.device);
+    if (previousDeviceRef.current) {
+      console.log(
+        "Turning off previous device:",
+        previousDeviceRef.current.device
+      );
+      await turnOffDevice(previousDeviceRef.current.device);
     }
 
     console.log("Lighting up the new device:", randomDevice.device);
     await lightUpDevice(randomDevice.device);
-    setPreviousDevice(randomDevice);
+    previousDeviceRef.current = randomDevice;
   };
 
   useEffect(() => {
     handleDeviceState();
-  }, [randomDevice, previousDevice]);
+  }, [randomDevice]);
 
   return (
     <div className="game-container">
       <h1>{gameType === "button" ? "Button Game" : "Light Sensor Game"}</h1>
       <ConnectedDevicesList />
 
-      {!gameStarted ? (
-        <div>
-          <AnimatedButton onClick={startGame}>Start Game</AnimatedButton>
-        </div>
-      ) : gameOver ? (
+      {gameOver ? (
         <div>
           <h3>Game Over!</h3>
           <p>Final Score: {score}</p>
+          <AnimatedButton onClick={startGame}>Start Game</AnimatedButton>
+        </div>
+      ) : !gameStarted ? (
+        <div>
+          <AnimatedButton onClick={startGame}>Start Game</AnimatedButton>
         </div>
       ) : (
         <>
@@ -321,7 +377,9 @@ export default function GamePage({ gameType }) {
           </div>
           <div className="hit-target">
             <p>
-              {gameType === "button" ? "Press Button A" : "Cover Light Sensor"}
+              {gameType === "button"
+                ? `Press Button ${button}`
+                : "Cover Light Sensor"}
             </p>
           </div>
         </>

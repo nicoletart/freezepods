@@ -88,9 +88,15 @@ export function ConnectedDevicesProvider({ children }) {
           name: newDevice.name,
           server: newDevice.server,
           services: newDevice.services,
+          ledOn: false,
         },
       },
     ]);
+  };
+
+  const handleRemoveDevice = (device) => {
+    console.log("Removing device:", device);
+    removeDevice(device.id);
   };
 
   const removeDevice = (deviceId) => {
@@ -166,9 +172,11 @@ export function ConnectedDevicesProvider({ children }) {
             return {
               ...device,
               device: {
+                ...device.id,
                 ...device.device,
                 server: server,
                 ...device.services,
+                ...device.ledOn,
               },
               reconnected: true,
             };
@@ -194,6 +202,7 @@ export function ConnectedDevicesProvider({ children }) {
         addDevice,
         resetDevices,
         reconnectDevices,
+        handleRemoveDevice,
         handleReconnectDevice,
       }}
     >

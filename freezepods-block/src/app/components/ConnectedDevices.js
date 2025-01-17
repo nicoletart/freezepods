@@ -16,8 +16,7 @@ export default function ConnectedDevices() {
         <ConnectDevice />
       </div>
 
-      <ConnectedDevicesList />
-
+      <ConnectedDevicesList showRemoveDevicesOption={true} />
       <div>
         <h2>Reset Devices</h2>
         <AnimatedButton onClick={resetDevices}>Reset Devices</AnimatedButton>
